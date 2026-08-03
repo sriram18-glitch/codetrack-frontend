@@ -12,13 +12,17 @@ import { Separator } from "../components/ui/separator";
 import * as authService from "../services/authService";
 
 export default function SettingsPage() {
-  const { admin, logout } = useAuth();
+  const { admin, logout, applySession } = useAuth();
   const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [newEmail, setNewEmail] = useState("");
+  const [emailPassword, setEmailPassword] = useState("");
+  const [savingEmail, setSavingEmail] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   function toggleTheme() {
     const next = !dark;
@@ -50,6 +54,27 @@ export default function SettingsPage() {
       setError(err?.response?.data?.message ?? "Could not change password.");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleEmailChange(e: React.FormEvent) {
+    e.preventDefault();
+    setEmailError(null);
+    if (!/^\S+@\S+\.\S+$/.test(newEmail)) {
+      setEmailError("Please enter a valid email address.");
+      return;
+    }
+    setSavingEmail(true);
+    try {
+      const res = await authService.changeEmail(emailPassword, newEmail);
+      applySession(res);
+      toast.success("Username changed — you're now logged in as " + res.admin.email);
+      setNewEmail("");
+      setEmailPassword("");
+    } catch (err: any) {
+      setEmailError(err?.response?.data?.message ?? "Could not change username.");
+    } finally {
+      setSavingEmail(false);
     }
   }
 
@@ -139,6 +164,46 @@ export default function SettingsPage() {
               <Button type="submit" disabled={saving}>
                 {saving && <Loader2 className="h-4 w-4 animate-spin" />}
                 Update Password
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <UserRound className="h-5 w-5 text-primary" />
+              Change Username
+            </CardTitle>
+            <CardDescription>Change the email you use to log in. You'll stay signed in with the new username.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleEmailChange} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="newEmail">New Username (Email)</Label>
+                <Input
+                  id="newEmail"
+                  type="email"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  placeholder="new.email@example.com"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="emailPassword">Current Password</Label>
+                <Input
+                  id="emailPassword"
+                  type="password"
+                  value={emailPassword}
+                  onChange={(e) => setEmailPassword(e.target.value)}
+                  required
+                />
+              </div>
+              {emailError && <p className="text-sm text-destructive">{emailError}</p>}
+              <Button type="submit" disabled={savingEmail}>
+                {savingEmail && <Loader2 className="h-4 w-4 animate-spin" />}
+                Update Username
               </Button>
             </form>
           </CardContent>

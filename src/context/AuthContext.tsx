@@ -7,6 +7,7 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  applySession: (res: authService.AuthResponse) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -52,8 +53,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAdmin(null);
   }, []);
 
+  const applySession = useCallback((res: authService.AuthResponse) => {
+    localStorage.setItem(TOKEN_KEY, res.accessToken);
+    localStorage.setItem(ADMIN_KEY, JSON.stringify(res.admin));
+    setAdmin(res.admin);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ admin, isAuthenticated: !!admin, login, logout }}>
+    <AuthContext.Provider value={{ admin, isAuthenticated: !!admin, login, logout, applySession }}>
       {children}
     </AuthContext.Provider>
   );

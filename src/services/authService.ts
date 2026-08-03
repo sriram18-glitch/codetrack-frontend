@@ -22,3 +22,8 @@ export async function login(email: string, password: string) {
 export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
   await api.post("/auth/change-password", { currentPassword, newPassword });
 }
+
+export async function changeEmail(currentPassword: string, newEmail: string): Promise<AuthResponse> {
+  const { data } = await api.post<AuthResponse>("/auth/change-email", { currentPassword, newEmail });
+  return data;
+}
