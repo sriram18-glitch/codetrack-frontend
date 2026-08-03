@@ -166,10 +166,9 @@ export default function StudentPerformancePanel({ student }: { student: Student 
           </div>
 
           <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <PlatformCard title="LeetCode" main={`Rating: ${performance?.leetcodeRating ?? "—"}`}
-              sub={`E/M/H: ${performance?.leetcodeEasy ?? 0}/${performance?.leetcodeMedium ?? 0}/${performance?.leetcodeHard ?? 0}`} />
-            <PlatformCard title="Codeforces" main={`Rating: ${performance?.codeforcesRating ?? "—"}`} sub="Contest rating" />
-            <PlatformCard title="CodeChef" main={`Rating: ${performance?.codechefRating ?? "—"}`} sub="Contest rating" />
+            {platformCards(performance).map((p) => (
+              <PlatformCard key={p.title} title={p.title} metrics={p.metrics} />
+            ))}
           </div>
 
           <div className="mt-5 flex flex-wrap items-center gap-2">
@@ -256,13 +255,64 @@ export default function StudentPerformancePanel({ student }: { student: Student 
   );
 }
 
-function PlatformCard({ title, main, sub }: { title: string; main: string; sub: string }) {
+function displayMetric(value: unknown): string {
+  return value === null || value === undefined || value === "" ? "Unavailable" : String(value);
+}
+
+type Metric = { label: string; value: string };
+
+function platformCards(performance: Performance | null) {
+  return [
+    {
+      title: "LeetCode",
+      metrics: [
+        { label: "Rating", value: displayMetric(performance?.leetcodeRating) },
+        { label: "Problems Solved", value: displayMetric(performance?.leetcodeSolved) },
+        {
+          label: "Easy / Medium / Hard",
+          value: performance
+            ? `${performance.leetcodeEasy ?? 0}/${performance.leetcodeMedium ?? 0}/${performance.leetcodeHard ?? 0}`
+            : "Unavailable",
+        },
+      ],
+    },
+    {
+      title: "Codeforces",
+      metrics: [
+        { label: "Rating", value: displayMetric(performance?.codeforcesRating) },
+        { label: "Problems Solved", value: displayMetric(performance?.codeforcesSolved) },
+        { label: "Max Rating", value: displayMetric(performance?.codeforcesMaxRating) },
+        { label: "Rank", value: displayMetric(performance?.codeforcesRank) },
+        { label: "Contest Count", value: displayMetric(performance?.codeforcesContestCount) },
+      ],
+    },
+    {
+      title: "CodeChef",
+      metrics: [
+        { label: "Rating", value: displayMetric(performance?.codechefRating) },
+        { label: "Problems Solved", value: displayMetric(performance?.codechefSolved) },
+        { label: "Stars", value: displayMetric(performance?.codechefStars) },
+        { label: "Global Rank", value: displayMetric(performance?.codechefGlobalRank) },
+      ],
+    },
+  ];
+}
+
+function PlatformCard({ title, metrics }: { title: string; metrics: Metric[] }) {
   return (
     <Card>
       <CardContent className="p-4">
         <p className="text-xs font-semibold text-muted-foreground">{title}</p>
-        <p className="mt-1 font-semibold">{main}</p>
-        <p className="mt-0.5 text-xs text-muted-foreground">{sub}</p>
+        <dl className="mt-2 space-y-1">
+          {metrics.map((m) => (
+            <div key={m.label} className="flex items-center justify-between gap-2 text-sm">
+              <dt className="text-xs text-muted-foreground">{m.label}</dt>
+              <dd className={m.value === "Unavailable" ? "font-medium text-muted-foreground" : "font-medium"}>
+                {m.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </CardContent>
     </Card>
   );

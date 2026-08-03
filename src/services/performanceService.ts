@@ -12,7 +12,14 @@ export interface Performance {
   leetcodeMedium: number | null;
   leetcodeHard: number | null;
   codeforcesRating: number | null;
+  codeforcesSolved: number | null;
+  codeforcesMaxRating: number | null;
+  codeforcesRank: string | null;
+  codeforcesContestCount: number | null;
   codechefRating: number | null;
+  codechefSolved: number | null;
+  codechefStars: string | null;
+  codechefGlobalRank: number | null;
   lastUpdated: string | null;
 }
 

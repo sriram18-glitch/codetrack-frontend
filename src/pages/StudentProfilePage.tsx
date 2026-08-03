@@ -143,20 +143,34 @@ export default function StudentProfilePage() {
       title: "LeetCode",
       username: profile?.leetcodeUsername,
       metrics: performance ? [
-        `Rating: ${performance.leetcodeRating ?? "—"}`,
-        `Solved: ${performance.leetcodeSolved ?? "—"}`,
-        `E/M/H: ${performance.leetcodeEasy ?? 0}/${performance.leetcodeMedium ?? 0}/${performance.leetcodeHard ?? 0}`,
+        { label: "Rating", value: displayMetric(performance.leetcodeRating) },
+        { label: "Problems Solved", value: displayMetric(performance.leetcodeSolved) },
+        {
+          label: "Easy / Medium / Hard",
+          value: `${performance.leetcodeEasy ?? 0}/${performance.leetcodeMedium ?? 0}/${performance.leetcodeHard ?? 0}`,
+        },
       ] : [],
     },
     {
       title: "Codeforces",
       username: profile?.codeforcesUsername,
-      metrics: performance ? [`Rating: ${performance.codeforcesRating ?? "—"}`] : [],
+      metrics: performance ? [
+        { label: "Rating", value: displayMetric(performance.codeforcesRating) },
+        { label: "Problems Solved", value: displayMetric(performance.codeforcesSolved) },
+        { label: "Max Rating", value: displayMetric(performance.codeforcesMaxRating) },
+        { label: "Rank", value: displayMetric(performance.codeforcesRank) },
+        { label: "Contest Count", value: displayMetric(performance.codeforcesContestCount) },
+      ] : [],
     },
     {
       title: "CodeChef",
       username: profile?.codechefUsername,
-      metrics: performance ? [`Rating: ${performance.codechefRating ?? "—"}`] : [],
+      metrics: performance ? [
+        { label: "Rating", value: displayMetric(performance.codechefRating) },
+        { label: "Problems Solved", value: displayMetric(performance.codechefSolved) },
+        { label: "Stars", value: displayMetric(performance.codechefStars) },
+        { label: "Global Rank", value: displayMetric(performance.codechefGlobalRank) },
+      ] : [],
     },
   ];
 
@@ -266,8 +280,15 @@ export default function StudentProfilePage() {
                     {p.username ? <Badge variant="success">Connected</Badge> : <Badge variant="secondary">Not set</Badge>}
                   </div>
                   <p className="mt-3 font-semibold">{p.username ?? "No username"}</p>
-                  <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
-                    {p.metrics.length ? p.metrics.map((m) => <li key={m}>{m}</li>) : <li>No sync data</li>}
+                  <ul className="mt-2 space-y-1 text-xs">
+                    {p.metrics.length ? p.metrics.map((m) => (
+                      <li key={m.label} className="flex items-center justify-between gap-2">
+                        <span className="text-muted-foreground">{m.label}</span>
+                        <span className={m.value === "Unavailable" ? "font-medium text-muted-foreground" : "font-medium"}>
+                          {m.value}
+                        </span>
+                      </li>
+                    )) : <li className="text-muted-foreground">No sync data</li>}
                   </ul>
                 </CardContent>
               </Card>
@@ -406,3 +427,7 @@ const SEVERITY: Record<string, "success" | "warning" | "danger" | "secondary"> =
   CRITICAL: "danger",
   INFO: "secondary",
 };
+
+function displayMetric(value: unknown): string {
+  return value === null || value === undefined || value === "" ? "Unavailable" : String(value);
+}
