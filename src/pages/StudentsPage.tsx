@@ -13,6 +13,7 @@ import * as studentService from "../services/studentService";
 import type { Student } from "../services/studentService";
 import * as analyticsService from "../services/analyticsService";
 import * as csvService from "../services/csvService";
+import * as performanceService from "../services/performanceService";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
@@ -110,6 +111,10 @@ export default function StudentsPage() {
     year?: number;
     section?: string;
     phone?: string;
+    leetcodeUsername?: string;
+    codeforcesUsername?: string;
+    codechefUsername?: string;
+    sync?: boolean;
   }) {
     setFormError(null);
     setSubmitting(true);
@@ -117,6 +122,14 @@ export default function StudentsPage() {
       if (editingStudent) {
         await studentService.updateStudent(editingStudent.id, payload);
         toast.success("Student updated");
+        if (payload.sync) {
+          toast.info("Syncing platforms...");
+          const result = await performanceService.syncAll(editingStudent.id);
+          result.results.forEach((r) => {
+            if (r.success) toast.success(`${r.platform}: ${r.message}`);
+            else toast.error(`${r.platform}: ${r.message}`);
+          });
+        }
       } else {
         await studentService.createStudent(payload);
         toast.success("Student added");

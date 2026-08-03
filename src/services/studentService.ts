@@ -20,6 +20,9 @@ export interface CreateStudentRequest {
   year?: number;
   section?: string;
   phone?: string;
+  leetcodeUsername?: string;
+  codeforcesUsername?: string;
+  codechefUsername?: string;
 }
 
 export async function listStudents(): Promise<Student[]> {

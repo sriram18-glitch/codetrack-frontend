@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, RefreshCw } from "lucide-react";
 import type { Student } from "../services/studentService";
+import * as codingProfileService from "../services/codingProfileService";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -12,6 +13,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
+
+const PROFILE_FIELDS = [
+  { key: "leetcode", label: "LeetCode Username", placeholder: "e.g. sriram_9167" },
+  { key: "codeforces", label: "Codeforces Username", placeholder: "e.g. tourist" },
+  { key: "codechef", label: "CodeChef Username", placeholder: "e.g. gennady.korotkevich" },
+] as const;
+
+type ProfileKey = (typeof PROFILE_FIELDS)[number]["key"];
 
 export default function StudentForm({
   open,
@@ -33,6 +42,10 @@ export default function StudentForm({
     year?: number;
     section?: string;
     phone?: string;
+    leetcodeUsername?: string;
+    codeforcesUsername?: string;
+    codechefUsername?: string;
+    sync?: boolean;
   }) => void;
   onCancel: () => void;
 }) {
@@ -43,30 +56,48 @@ export default function StudentForm({
   const [year, setYear] = useState("");
   const [section, setSection] = useState("");
   const [phone, setPhone] = useState("");
+  const [profiles, setProfiles] = useState<Record<ProfileKey, string>>({
+    leetcode: "",
+    codeforces: "",
+    codechef: "",
+  });
 
   useEffect(() => {
-    if (open) {
-      if (editingStudent) {
-        setRollNumber(editingStudent.rollNumber);
-        setName(editingStudent.name);
-        setEmail(editingStudent.email);
-        setBranch(editingStudent.branch ?? "");
-        setYear(editingStudent.year ? String(editingStudent.year) : "");
-        setSection(editingStudent.section ?? "");
-        setPhone(editingStudent.phone ?? "");
-      } else {
-        setRollNumber("");
-        setName("");
-        setEmail("");
-        setBranch("");
-        setYear("");
-        setSection("");
-        setPhone("");
-      }
+    if (!open) return;
+    if (editingStudent) {
+      setRollNumber(editingStudent.rollNumber);
+      setName(editingStudent.name);
+      setEmail(editingStudent.email);
+      setBranch(editingStudent.branch ?? "");
+      setYear(editingStudent.year ? String(editingStudent.year) : "");
+      setSection(editingStudent.section ?? "");
+      setPhone(editingStudent.phone ?? "");
+      setProfiles({ leetcode: "", codeforces: "", codechef: "" });
+      codingProfileService
+        .getProfile(editingStudent.id)
+        .then((profile) => {
+          setProfiles({
+            leetcode: profile?.leetcodeUsername ?? "",
+            codeforces: profile?.codeforcesUsername ?? "",
+            codechef: profile?.codechefUsername ?? "",
+          });
+        })
+        .catch(() => {
+          // profile may not exist yet; keep fields empty
+        });
+    } else {
+      setRollNumber("");
+      setName("");
+      setEmail("");
+      setBranch("");
+      setYear("");
+      setSection("");
+      setPhone("");
+      setProfiles({ leetcode: "", codeforces: "", codechef: "" });
     }
   }, [open, editingStudent]);
 
-  function handleSubmit(e: FormEvent) {
+  function handleSubmit(e: FormEvent, sync: boolean) {
     e.preventDefault();
     onSubmit({
       rollNumber,
@@ -76,6 +107,10 @@ export default function StudentForm({
       year: year ? Number(year) : undefined,
       section: section || undefined,
       phone: phone || undefined,
+      leetcodeUsername: profiles.leetcode.trim() || undefined,
+      codeforcesUsername: profiles.codeforces.trim() || undefined,
+      codechefUsername: profiles.codechef.trim() || undefined,
+      sync,
     });
   }
 
@@ -89,7 +124,7 @@ export default function StudentForm({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <form onSubmit={(e) => handleSubmit(e, false)} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="rollNumber">Roll Number *</Label>
             <Input
@@ -161,6 +196,23 @@ export default function StudentForm({
             />
           </div>
 
+          <div className="sm:col-span-2 mt-2 border-t pt-4">
+            <p className="text-sm font-semibold">Coding Profiles</p>
+            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
+              {PROFILE_FIELDS.map(({ key, label, placeholder }) => (
+                <div key={key} className="space-y-2">
+                  <Label htmlFor={key}>{label}</Label>
+                  <Input
+                    id={key}
+                    value={profiles[key]}
+                    onChange={(e) => setProfiles((v) => ({ ...v, [key]: e.target.value }))}
+                    placeholder={placeholder}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
           {error && <p className="sm:col-span-2 text-sm text-destructive">{error}</p>}
 
           <DialogFooter className="sm:col-span-2 pt-2">
@@ -171,6 +223,17 @@ export default function StudentForm({
               {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
               {submitting ? "Saving..." : editingStudent ? "Update Student" : "Save Student"}
             </Button>
+            {editingStudent && (
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={submitting}
+                onClick={(e) => handleSubmit(e, true)}
+              >
+                {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                Update &amp; Sync
+              </Button>
+            )}
           </DialogFooter>
         </form>
       </DialogContent>
