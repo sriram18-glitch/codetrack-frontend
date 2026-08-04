@@ -402,11 +402,21 @@ function DetailRow({ label, value }: { label: string; value: string }) {
 function breakdownComponents(performance: Performance | null) {
   if (!performance) return [];
   const s = performance.leetcodeSolved ?? 0;
+  const cfSolved = performance.codeforcesSolved ?? 0;
+  const ccSolved = performance.codechefSolved ?? 0;
   const weighted = (performance.leetcodeEasy ?? 0) + 2 * (performance.leetcodeMedium ?? 0) + 4 * (performance.leetcodeHard ?? 0);
   const lc = Math.min(6, (weighted / 600) * 6) + Math.min(4, ((performance.leetcodeRating ?? 0) / 3000) * 4);
-  const cf = performance.codeforcesRating ? Math.min(10, (performance.codeforcesRating / 3500) * 10) : 0;
-  const cc = performance.codechefRating ? Math.min(10, (performance.codechefRating / 3500) * 10) : 0;
-  const ps = Math.min(10, (s / 300) * 10);
+  const cf = performance.codeforcesRating
+    ? Math.min(10, (performance.codeforcesRating / 3500) * 10)
+    : cfSolved
+      ? Math.min(10, (cfSolved / 300) * 10)
+      : 0;
+  const cc = performance.codechefRating
+    ? Math.min(10, (performance.codechefRating / 3500) * 10)
+    : ccSolved
+      ? Math.min(10, (ccSolved / 300) * 10)
+      : 0;
+  const ps = Math.min(10, ((s + cfSolved + ccSolved) / 300) * 10);
   const items = [
     { label: "LeetCode", weight: 35, value: Math.min(10, lc) },
     { label: "Codeforces", weight: 30, value: cf },
