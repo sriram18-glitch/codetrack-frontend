@@ -1,6 +1,5 @@
 import { FormEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { GraduationCap, Loader2, CheckCircle2, XCircle, UserPlus, ArrowLeft } from "lucide-react";
+import { GraduationCap, Loader2, CheckCircle2, XCircle, UserPlus } from "lucide-react";
 import * as registerService from "../services/registerService";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -18,7 +17,6 @@ const USERNAME_FIELDS: { key: Platform; label: string; placeholder: string }[] =
 ];
 
 export default function RegisterPage() {
-  const navigate = useNavigate();
   const [rollNumber, setRollNumber] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -126,24 +124,14 @@ export default function RegisterPage() {
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-500">
               <CheckCircle2 className="h-7 w-7" />
             </div>
-            <CardTitle className="mt-4 text-2xl">Registration Successful</CardTitle>
-            <CardDescription>
-              Welcome to CodeTrack, {success.name}. Your profile has been created.
-            </CardDescription>
+            <CardTitle className="mt-4 text-2xl">Registration Successful!</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="rounded-lg border bg-muted/50 p-4 text-left text-sm">
-              <p><span className="text-muted-foreground">Roll Number:</span> <span className="font-medium">{success.rollNumber}</span></p>
-              <p className="mt-1"><span className="text-muted-foreground">Email:</span> <span className="font-medium">{email}</span></p>
-            </div>
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground">Your account has been created successfully.</p>
+            <p className="text-sm text-muted-foreground">Your profile is now available in the admin dashboard.</p>
             <p className="text-sm text-muted-foreground">
-              Your details now appear on the admin dashboard. Platform data will be populated when your
-              profiles are synced.
+              Your coding data will appear after the admin performs synchronization.
             </p>
-            <Button className="w-full" variant="outline" onClick={() => navigate("/login")}>
-              <ArrowLeft className="h-4 w-4" />
-              Back to Login
-            </Button>
           </CardContent>
         </Card>
       </div>
@@ -283,13 +271,6 @@ export default function RegisterPage() {
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
               {loading ? "Registering..." : "Create Account"}
             </Button>
-
-            <p className="text-center text-sm text-muted-foreground">
-              Already have an account?{" "}
-              <button type="button" onClick={() => navigate("/login")} className="font-medium text-primary hover:underline">
-                Log in
-              </button>
-            </p>
           </form>
         </CardContent>
       </Card>
