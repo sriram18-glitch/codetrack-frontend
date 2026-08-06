@@ -75,10 +75,6 @@ export default function LoginPage() {
               {loading ? "Logging in..." : "Log In"}
             </Button>
           </form>
-
-          <p className="mt-6 text-center text-xs text-muted-foreground">
-            Default seeded admin: admin@codetrack.local / Admin@12345
-          </p>
         </CardContent>
       </Card>
     </div>

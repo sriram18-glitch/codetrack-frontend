@@ -14,6 +14,7 @@ export default function ReportsPage() {
   const [branches, setBranches] = useState<string[]>([]);
   const [selectedStudent, setSelectedStudent] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
+  const [selectedYear, setSelectedYear] = useState("all");
   const [busy, setBusy] = useState<string | null>(null);
 
   useEffect(() => {
@@ -141,6 +142,51 @@ export default function ReportsPage() {
               {busy === "College report" ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
               Download PDF
             </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-indigo-500" />
+              Year-wise Report
+            </CardTitle>
+            <CardDescription>
+              Consolidated performance report for a single academic year, ready for faculty review.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Select value={selectedYear} onValueChange={setSelectedYear}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a year..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Years</SelectItem>
+                <SelectItem value="1">Year 1</SelectItem>
+                <SelectItem value="2">Year 2</SelectItem>
+                <SelectItem value="3">Year 3</SelectItem>
+                <SelectItem value="4">Year 4</SelectItem>
+              </SelectContent>
+            </Select>
+            <div className="flex gap-2">
+              <Button
+                className="flex-1"
+                disabled={busy !== null}
+                onClick={() => run("Year report", () => reportsService.downloadYearReport(selectedYear))}
+              >
+                {busy === "Year report" ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
+                Generate Report
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1"
+                disabled={busy !== null}
+                onClick={() => run("Year report", () => reportsService.downloadYearReport(selectedYear))}
+              >
+                <FileDown className="h-4 w-4" />
+                Export PDF
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
