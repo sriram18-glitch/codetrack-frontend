@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { GraduationCap, Moon, Sun, LayoutDashboard, Users, UserPlus, Search, Trophy, BarChart3, FileText, Settings, LogOut, Menu, X } from "lucide-react";
+import { GraduationCap, Moon, Sun, LayoutDashboard, Users, UserPlus, Search, Trophy, BarChart3, FileText, Settings, LogOut, Menu, X, WifiOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
@@ -23,6 +23,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     return localStorage.getItem("codetrack_theme") === "dark";
   });
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const [online, setOnline] = useState(() => navigator.onLine);
+  useEffect(() => {
+    const on = () => setOnline(true);
+    const off = () => setOnline(false);
+    window.addEventListener("online", on);
+    window.addEventListener("offline", off);
+    return () => {
+      window.removeEventListener("online", on);
+      window.removeEventListener("offline", off);
+    };
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", dark);
@@ -115,6 +127,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <span className="text-sm font-semibold text-muted-foreground">CodeTrack</span>
           </div>
           <div className="flex items-center gap-2">
+            {!online && (
+              <span className="flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-1 text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                <WifiOff className="h-3.5 w-3.5" />
+                Offline — live data unavailable
+              </span>
+            )}
             <Button
               variant="ghost"
               size="icon"
