@@ -13,6 +13,7 @@ export interface LeaderboardEntry {
   leetcodeSolved: number | null;
   codeforcesRating: number | null;
   codechefRating: number | null;
+  totalSolved: number | null;
 }
 
 export interface AnalyticsSummary {

@@ -75,6 +75,17 @@ export default function LoginPage() {
               {loading ? "Logging in..." : "Log In"}
             </Button>
           </form>
+
+          <p className="mt-4 text-center text-sm text-muted-foreground">
+            New student?{" "}
+            <button
+              type="button"
+              onClick={() => navigate("/register")}
+              className="font-medium text-primary hover:underline"
+            >
+              Create an account
+            </button>
+          </p>
         </CardContent>
       </Card>
     </div>

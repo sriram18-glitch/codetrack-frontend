@@ -17,8 +17,15 @@ const MEDAL_STYLES = ["text-amber-500", "text-slate-400", "text-orange-400"];
 
 type SortKey = "overall" | "lc" | "cf" | "cc";
 
+function byRoll(a: LeaderboardEntry, b: LeaderboardEntry) {
+  return a.rollNumber.localeCompare(b.rollNumber, undefined, { numeric: true, sensitivity: "base" });
+}
+
 const SORTERS: Record<SortKey, (a: LeaderboardEntry, b: LeaderboardEntry) => number> = {
-  overall: (a, b) => (b.overallScore ?? -1) - (a.overallScore ?? -1),
+  overall: (a, b) =>
+    (b.overallScore ?? -1) - (a.overallScore ?? -1) ||
+    (b.totalSolved ?? 0) - (a.totalSolved ?? 0) ||
+    byRoll(a, b),
   lc: (a, b) => (b.leetcodeSolved ?? -1) - (a.leetcodeSolved ?? -1),
   cf: (a, b) => (b.codeforcesRating ?? -1) - (a.codeforcesRating ?? -1),
   cc: (a, b) => (b.codechefRating ?? -1) - (a.codechefRating ?? -1),

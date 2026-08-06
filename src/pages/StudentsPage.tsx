@@ -35,6 +35,8 @@ import {
   AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "../components/ui/alert-dialog";
 
+type SortKey = "roll" | "name" | "overall" | "recent";
+
 export default function StudentsPage() {
   const navigate = useNavigate();
   const [students, setStudents] = useState<Student[]>([]);
@@ -46,6 +48,7 @@ export default function StudentsPage() {
   const [filterBranch, setFilterBranch] = useState("all");
   const [filterYear, setFilterYear] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [sortKey, setSortKey] = useState<SortKey>("roll");
 
   const [showForm, setShowForm] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
@@ -198,6 +201,34 @@ export default function StudentsPage() {
     return matchQ && matchBranch && matchYear && matchStatus;
   });
 
+  const sortedStudents = useMemo(() => {
+    const list = [...filteredStudents];
+    switch (sortKey) {
+      case "name":
+        list.sort(
+          (a, b) =>
+            a.name.localeCompare(b.name, undefined, { sensitivity: "base" }) ||
+            a.rollNumber.localeCompare(b.rollNumber, undefined, { numeric: true, sensitivity: "base" })
+        );
+        break;
+      case "overall":
+        list.sort(
+          (a, b) =>
+            (scores[b.id] ?? -1) - (scores[a.id] ?? -1) ||
+            a.rollNumber.localeCompare(b.rollNumber, undefined, { numeric: true, sensitivity: "base" })
+        );
+        break;
+      case "recent":
+        list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        break;
+      default:
+        list.sort(
+          (a, b) => a.rollNumber.localeCompare(b.rollNumber, undefined, { numeric: true, sensitivity: "base" })
+        );
+    }
+    return list;
+  }, [filteredStudents, sortKey, scores]);
+
   return (
     <AppLayout>
       <PageHeader
@@ -250,6 +281,18 @@ export default function StudentsPage() {
             <SelectItem value="synced">Synced</SelectItem>
             <SelectItem value="at-risk">At Risk</SelectItem>
             <SelectItem value="unsynced">Unsynced</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={sortKey} onValueChange={(v) => setSortKey(v as SortKey)}>
+          <SelectTrigger className="w-40">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="roll">Roll Number</SelectItem>
+            <SelectItem value="name">Name</SelectItem>
+            <SelectItem value="overall">Overall Score</SelectItem>
+            <SelectItem value="recent">Recently Added</SelectItem>
           </SelectContent>
         </Select>
 
@@ -324,7 +367,7 @@ export default function StudentsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredStudents.map((s, idx) => {
+                {sortedStudents.map((s, idx) => {
                   const score = scores[s.id];
                   const status = score == null ? "unsynced" : atRiskIds.has(s.id) ? "at-risk" : "synced";
                   return (
