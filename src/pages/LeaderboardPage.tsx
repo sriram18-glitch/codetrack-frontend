@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Trophy, Medal } from "lucide-react";
 import AppLayout from "../components/AppLayout";
 import { PageHeader, initialsAvatar } from "../components/PageHeader";
+import { yearRoman } from "../lib/utils";
 import * as analyticsService from "../services/analyticsService";
 import type { LeaderboardEntry } from "../services/analyticsService";
 import { Badge } from "../components/ui/badge";
@@ -103,7 +104,7 @@ export default function LeaderboardPage() {
             <SelectContent>
               <SelectItem value="all">All Years</SelectItem>
               {years.map((y) => (
-                <SelectItem key={y} value={String(y)}>Year {y}</SelectItem>
+                <SelectItem key={y} value={String(y)}>{yearRoman(y)}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -162,7 +163,7 @@ export default function LeaderboardPage() {
                   </TableCell>
                   <TableCell className="hidden text-muted-foreground md:table-cell">
                     {entry.branch ?? "—"}
-                    {entry.year ? `, Year ${entry.year}` : ""}
+                    {entry.year ? `, ${yearRoman(entry.year)}` : ""}
                   </TableCell>
                   <TableCell>
                     <ScoreBadge value={tab === "overall" ? entry.overallScore : tab === "lc" ? entry.leetcodeSolved : tab === "cf" ? entry.codeforcesRating : entry.codechefRating} metric={tab} />

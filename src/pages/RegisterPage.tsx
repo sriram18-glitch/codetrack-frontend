@@ -63,7 +63,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
 
-    const required = { "Roll number": rollNumber, Name: name, Email: email, Branch: branch, Year: year, Section: section };
+    const required = { "Roll number": rollNumber, Name: name, Email: email, Branch: branch, Year: year, Section: section, Phone: phone };
     for (const [label, value] of Object.entries(required)) {
       if (!value.trim()) {
         setError(`${label} is required`);
@@ -77,6 +77,10 @@ export default function RegisterPage() {
     const yearNum = Number(year);
     if (!Number.isInteger(yearNum) || yearNum < 1 || yearNum > 4) {
       setError("Year must be between 1 and 4");
+      return;
+    }
+    if (!/^\d{10}$/.test(phone)) {
+      setError("Phone number must be exactly 10 digits");
       return;
     }
 
@@ -100,7 +104,7 @@ export default function RegisterPage() {
         branch,
         year: yearNum,
         section,
-        phone: phone || undefined,
+        phone,
         leetcodeUsername: usernames.leetcode.trim() || undefined,
         codeforcesUsername: usernames.codeforces.trim() || undefined,
         codechefUsername: usernames.codechef.trim() || undefined,
@@ -206,10 +210,10 @@ export default function RegisterPage() {
                       <SelectValue placeholder="Select year" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1">Year 1</SelectItem>
-                      <SelectItem value="2">Year 2</SelectItem>
-                      <SelectItem value="3">Year 3</SelectItem>
-                      <SelectItem value="4">Year 4</SelectItem>
+                      <SelectItem value="1">I</SelectItem>
+                      <SelectItem value="2">II</SelectItem>
+                      <SelectItem value="3">III</SelectItem>
+                      <SelectItem value="4">IV</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -224,12 +228,15 @@ export default function RegisterPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone (optional)</Label>
+                  <Label htmlFor="phone">Phone *</Label>
                   <Input
                     id="phone"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="e.g. 9999999999"
+                    inputMode="numeric"
+                    maxLength={10}
+                    required
                   />
                 </div>
               </div>

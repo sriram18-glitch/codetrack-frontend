@@ -56,6 +56,7 @@ export default function StudentForm({
   const [year, setYear] = useState("");
   const [section, setSection] = useState("");
   const [phone, setPhone] = useState("");
+  const [fieldError, setFieldError] = useState<string | null>(null);
   const [profiles, setProfiles] = useState<Record<ProfileKey, string>>({
     leetcode: "",
     codeforces: "",
@@ -95,10 +96,20 @@ export default function StudentForm({
       setPhone("");
       setProfiles({ leetcode: "", codeforces: "", codechef: "" });
     }
+    setFieldError(null);
   }, [open, editingStudent]);
 
   function handleSubmit(e: FormEvent, sync: boolean) {
     e.preventDefault();
+    if (!phone.trim()) {
+      setFieldError("Phone number is required");
+      return;
+    }
+    if (!/^\d{10}$/.test(phone.trim())) {
+      setFieldError("Phone number must be exactly 10 digits");
+      return;
+    }
+    setFieldError(null);
     onSubmit({
       rollNumber,
       name,
@@ -106,7 +117,7 @@ export default function StudentForm({
       branch: branch || undefined,
       year: year ? Number(year) : undefined,
       section: section || undefined,
-      phone: phone || undefined,
+      phone: phone.trim(),
       leetcodeUsername: profiles.leetcode.trim() || undefined,
       codeforcesUsername: profiles.codeforces.trim() || undefined,
       codechefUsername: profiles.codechef.trim() || undefined,
@@ -171,7 +182,7 @@ export default function StudentForm({
               id="year"
               type="number"
               min={1}
-              max={6}
+              max={4}
               value={year}
               onChange={(e) => setYear(e.target.value)}
               placeholder="e.g. 3"
@@ -187,12 +198,15 @@ export default function StudentForm({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="phone">Phone *</Label>
             <Input
               id="phone"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="Optional"
+              placeholder="e.g. 9999999999"
+              inputMode="numeric"
+              maxLength={10}
+              required
             />
           </div>
 
@@ -213,7 +227,7 @@ export default function StudentForm({
             </div>
           </div>
 
-          {error && <p className="sm:col-span-2 text-sm text-destructive">{error}</p>}
+          {(fieldError || error) && <p className="sm:col-span-2 text-sm text-destructive">{fieldError || error}</p>}
 
           <DialogFooter className="sm:col-span-2 pt-2">
             <Button type="button" variant="outline" onClick={onCancel} disabled={submitting}>

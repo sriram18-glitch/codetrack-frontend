@@ -162,10 +162,10 @@ export default function ReportsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Years</SelectItem>
-                <SelectItem value="1">Year 1</SelectItem>
-                <SelectItem value="2">Year 2</SelectItem>
-                <SelectItem value="3">Year 3</SelectItem>
-                <SelectItem value="4">Year 4</SelectItem>
+                <SelectItem value="1">I</SelectItem>
+                <SelectItem value="2">II</SelectItem>
+                <SelectItem value="3">III</SelectItem>
+                <SelectItem value="4">IV</SelectItem>
               </SelectContent>
             </Select>
             <div className="flex gap-2">

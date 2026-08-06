@@ -6,6 +6,7 @@ import {
 import { toast } from "sonner";
 import AppLayout from "../components/AppLayout";
 import { PageHeader, initialsAvatar } from "../components/PageHeader";
+import { yearRoman } from "../lib/utils";
 import StudentForm from "../components/StudentForm";
 import StudentPerformancePanel from "../components/StudentPerformancePanel";
 import { Button } from "../components/ui/button";
@@ -185,7 +186,7 @@ export default function StudentProfilePage() {
         <PageHeader
           icon={<UserRound className="h-6 w-6" />}
           title={student.name}
-          description={`${student.rollNumber}${student.branch ? ` · ${student.branch}` : ""}${student.year ? ` · Year ${student.year}` : ""}`}
+          description={`${student.rollNumber}${student.branch ? ` · ${student.branch}` : ""}${student.year ? ` · ${yearRoman(student.year)}` : ""}`}
         />
         <div className="flex items-center gap-2">
           <Button onClick={() => setShowSync(true)}>
@@ -221,7 +222,7 @@ export default function StudentProfilePage() {
               <Separator />
               <DetailRow label="Roll Number" value={student.rollNumber} />
               <DetailRow label="Branch" value={student.branch ?? "—"} />
-              <DetailRow label="Year" value={student.year ? String(student.year) : "—"} />
+              <DetailRow label="Year" value={student.year ? yearRoman(student.year) : "—"} />
               <DetailRow label="Section" value={student.section ?? "—"} />
               <DetailRow label="Phone" value={student.phone ?? "—"} />
             </CardContent>

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import AppLayout from "../components/AppLayout";
 import { PageHeader, initialsAvatar } from "../components/PageHeader";
+import { yearRoman } from "../lib/utils";
 import StudentForm from "../components/StudentForm";
 import StudentPerformancePanel from "../components/StudentPerformancePanel";
 import CodingProfileDialog from "../components/CodingProfileDialog";
@@ -267,7 +268,7 @@ export default function StudentsPage() {
           <SelectContent>
             <SelectItem value="all">All Years</SelectItem>
             {years.map((y) => (
-              <SelectItem key={y} value={String(y)}>Year {y}</SelectItem>
+              <SelectItem key={y} value={String(y)}>{yearRoman(y)}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -381,7 +382,7 @@ export default function StudentsPage() {
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {s.branch ?? "—"}
-                        {s.year ? `, Year ${s.year}` : ""}
+                        {s.year ? `, ${yearRoman(s.year)}` : ""}
                       </TableCell>
                       <TableCell className="hidden text-muted-foreground md:table-cell">{s.email}</TableCell>
                       <TableCell>

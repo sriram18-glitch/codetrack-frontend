@@ -4,6 +4,7 @@ import { Search, Loader2, UserRound, RefreshCw, Eye, ArrowRight } from "lucide-r
 import { toast } from "sonner";
 import AppLayout from "../components/AppLayout";
 import { PageHeader } from "../components/PageHeader";
+import { yearRoman } from "../lib/utils";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -124,7 +125,7 @@ export default function SearchPage() {
                       <p className="font-semibold">{s.name}</p>
                       <p className="text-xs text-muted-foreground">
                         {s.rollNumber} · {s.branch ?? "—"}
-                        {s.year ? `, Year ${s.year}` : ""}
+                        {s.year ? `, ${yearRoman(s.year)}` : ""}
                       </p>
                     </div>
                   </div>

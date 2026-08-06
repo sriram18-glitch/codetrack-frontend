@@ -42,6 +42,14 @@ export default function AddStudentPage() {
   });
 
   async function createAndNavigate(sync: boolean) {
+    if (!phone) {
+      toast.error("Phone number is required");
+      return;
+    }
+    if (!/^\d{10}$/.test(phone)) {
+      toast.error("Phone number must be exactly 10 digits");
+      return;
+    }
     try {
       const student = await studentService.createStudent({
         rollNumber,
@@ -50,7 +58,7 @@ export default function AddStudentPage() {
         branch: branch || undefined,
         year: year ? Number(year) : undefined,
         section: section || undefined,
-        phone: phone || undefined,
+        phone,
         leetcodeUsername: profiles.leetcode || undefined,
         codeforcesUsername: profiles.codeforces || undefined,
         codechefUsername: profiles.codechef || undefined,
@@ -120,8 +128,8 @@ export default function AddStudentPage() {
               <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="student@college.edu" required />
             </div>
             <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="phone">Phone</Label>
-              <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Optional" />
+              <Label htmlFor="phone">Phone *</Label>
+              <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="e.g. 9999999999" inputMode="numeric" maxLength={10} required />
             </div>
           </CardContent>
         </Card>
@@ -138,7 +146,7 @@ export default function AddStudentPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="year">Year</Label>
-              <Input id="year" type="number" min={1} max={6} value={year} onChange={(e) => setYear(e.target.value)} placeholder="e.g. 3" />
+              <Input id="year" type="number" min={1} max={4} value={year} onChange={(e) => setYear(e.target.value)} placeholder="e.g. 3" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="section">Section</Label>
