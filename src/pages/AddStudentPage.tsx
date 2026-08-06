@@ -9,7 +9,6 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import * as studentService from "../services/studentService";
-import * as codingProfileService from "../services/codingProfileService";
 import * as performanceService from "../services/performanceService";
 
 const PROFILE_FIELDS = [
@@ -52,9 +51,6 @@ export default function AddStudentPage() {
         year: year ? Number(year) : undefined,
         section: section || undefined,
         phone: phone || undefined,
-      });
-
-      await codingProfileService.upsertProfile(student.id, {
         leetcodeUsername: profiles.leetcode || undefined,
         codeforcesUsername: profiles.codeforces || undefined,
         codechefUsername: profiles.codechef || undefined,
