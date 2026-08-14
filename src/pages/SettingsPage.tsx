@@ -9,6 +9,7 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Separator } from "../components/ui/separator";
+import BulkSyncPanel from "../components/BulkSyncPanel";
 import * as authService from "../services/authService";
 
 export default function SettingsPage() {
@@ -222,6 +223,8 @@ export default function SettingsPage() {
             <span className="text-sm text-muted-foreground">Currently: {dark ? "Dark" : "Light"} mode</span>
           </CardContent>
         </Card>
+
+        <BulkSyncPanel />
       </div>
     </AppLayout>
   );
