@@ -9,6 +9,8 @@ export interface Student {
   year?: number;
   section?: string;
   phone?: string;
+  githubProfileUrl?: string;
+  linkedinProfileUrl?: string;
   createdAt: string;
 }
 
@@ -20,6 +22,8 @@ export interface CreateStudentRequest {
   year?: number;
   section?: string;
   phone?: string;
+  githubProfileUrl?: string;
+  linkedinProfileUrl?: string;
   leetcodeUsername?: string;
   codeforcesUsername?: string;
   codechefUsername?: string;

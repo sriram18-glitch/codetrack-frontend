@@ -22,6 +22,9 @@ const PROFILE_FIELDS = [
 
 type ProfileKey = (typeof PROFILE_FIELDS)[number]["key"];
 
+const GITHUB_URL_RE = /^(https?:\/\/)([a-zA-Z0-9-]+\.)*github\.com\/[A-Za-z0-9][A-Za-z0-9_.-]*$/;
+const LINKEDIN_URL_RE = /^(https?:\/\/)([a-zA-Z0-9-]+\.)*linkedin\.com\/in\/[A-Za-z0-9][A-Za-z0-9_-]*$/;
+
 export default function StudentForm({
   open,
   editingStudent,
@@ -42,6 +45,8 @@ export default function StudentForm({
     year?: number;
     section?: string;
     phone?: string;
+    githubProfileUrl?: string;
+    linkedinProfileUrl?: string;
     leetcodeUsername?: string;
     codeforcesUsername?: string;
     codechefUsername?: string;
@@ -56,6 +61,8 @@ export default function StudentForm({
   const [year, setYear] = useState("");
   const [section, setSection] = useState("");
   const [phone, setPhone] = useState("");
+  const [githubUrl, setGithubUrl] = useState("");
+  const [linkedinUrl, setLinkedinUrl] = useState("");
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [profiles, setProfiles] = useState<Record<ProfileKey, string>>({
     leetcode: "",
@@ -73,6 +80,8 @@ export default function StudentForm({
       setYear(editingStudent.year ? String(editingStudent.year) : "");
       setSection(editingStudent.section ?? "");
       setPhone(editingStudent.phone ?? "");
+      setGithubUrl(editingStudent.githubProfileUrl ?? "");
+      setLinkedinUrl(editingStudent.linkedinProfileUrl ?? "");
       setProfiles({ leetcode: "", codeforces: "", codechef: "" });
       codingProfileService
         .getProfile(editingStudent.id)
@@ -94,6 +103,8 @@ export default function StudentForm({
       setYear("");
       setSection("");
       setPhone("");
+      setGithubUrl("");
+      setLinkedinUrl("");
       setProfiles({ leetcode: "", codeforces: "", codechef: "" });
     }
     setFieldError(null);
@@ -109,6 +120,22 @@ export default function StudentForm({
       setFieldError("Phone number must be exactly 10 digits");
       return;
     }
+    if (!githubUrl.trim()) {
+      setFieldError("GitHub profile is required");
+      return;
+    }
+    if (!GITHUB_URL_RE.test(githubUrl.trim())) {
+      setFieldError("Please enter a valid GitHub profile URL");
+      return;
+    }
+    if (!linkedinUrl.trim()) {
+      setFieldError("LinkedIn profile is required");
+      return;
+    }
+    if (!LINKEDIN_URL_RE.test(linkedinUrl.trim())) {
+      setFieldError("Please enter a valid LinkedIn profile URL");
+      return;
+    }
     setFieldError(null);
     onSubmit({
       rollNumber,
@@ -118,6 +145,8 @@ export default function StudentForm({
       year: year ? Number(year) : undefined,
       section: section || undefined,
       phone: phone.trim(),
+      githubProfileUrl: githubUrl.trim(),
+      linkedinProfileUrl: linkedinUrl.trim(),
       leetcodeUsername: profiles.leetcode.trim() || undefined,
       codeforcesUsername: profiles.codeforces.trim() || undefined,
       codechefUsername: profiles.codechef.trim() || undefined,
@@ -208,6 +237,34 @@ export default function StudentForm({
               maxLength={10}
               required
             />
+          </div>
+
+          <div className="sm:col-span-2 mt-2 border-t pt-4">
+            <p className="text-sm font-semibold">Profile Links</p>
+            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="githubProfileUrl">GitHub Profile URL *</Label>
+                <Input
+                  id="githubProfileUrl"
+                  type="url"
+                  value={githubUrl}
+                  onChange={(e) => setGithubUrl(e.target.value)}
+                  placeholder="e.g. https://github.com/username"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="linkedinProfileUrl">LinkedIn Profile URL *</Label>
+                <Input
+                  id="linkedinProfileUrl"
+                  type="url"
+                  value={linkedinUrl}
+                  onChange={(e) => setLinkedinUrl(e.target.value)}
+                  placeholder="e.g. https://www.linkedin.com/in/username"
+                  required
+                />
+              </div>
+            </div>
           </div>
 
           <div className="sm:col-span-2 mt-2 border-t pt-4">

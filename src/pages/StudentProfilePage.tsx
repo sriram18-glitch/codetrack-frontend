@@ -84,6 +84,8 @@ export default function StudentProfilePage() {
     year?: number;
     section?: string;
     phone?: string;
+    githubProfileUrl?: string;
+    linkedinProfileUrl?: string;
   }) {
     if (!id) return;
     setFormError(null);
@@ -225,6 +227,12 @@ export default function StudentProfilePage() {
               <DetailRow label="Year" value={student.year ? yearRoman(student.year) : "—"} />
               <DetailRow label="Section" value={student.section ?? "—"} />
               <DetailRow label="Phone" value={student.phone ?? "—"} />
+              {student.githubProfileUrl && (
+                <DetailLinkRow label="GitHub" url={student.githubProfileUrl} />
+              )}
+              {student.linkedinProfileUrl && (
+                <DetailLinkRow label="LinkedIn" url={student.linkedinProfileUrl} />
+              )}
             </CardContent>
           </Card>
 
@@ -396,6 +404,22 @@ function DetailRow({ label, value }: { label: string; value: string }) {
     <div className="flex items-center justify-between">
       <span className="text-muted-foreground">{label}</span>
       <span className="font-medium">{value}</span>
+    </div>
+  );
+}
+
+function DetailLinkRow({ label, url }: { label: string; url: string }) {
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <span className="text-muted-foreground">{label}</span>
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="max-w-[60%] truncate font-medium text-primary hover:underline"
+      >
+        {url.replace(/^https?:\/\//, "")}
+      </a>
     </div>
   );
 }

@@ -16,6 +16,9 @@ const USERNAME_FIELDS: { key: Platform; label: string; placeholder: string }[] =
   { key: "codechef", label: "CodeChef Username", placeholder: "e.g. gennady.korotkevich" },
 ];
 
+const GITHUB_URL_RE = /^(https?:\/\/)([a-zA-Z0-9-]+\.)*github\.com\/[A-Za-z0-9][A-Za-z0-9_.-]*$/;
+const LINKEDIN_URL_RE = /^(https?:\/\/)([a-zA-Z0-9-]+\.)*linkedin\.com\/in\/[A-Za-z0-9][A-Za-z0-9_-]*$/;
+
 export default function RegisterPage() {
   const [rollNumber, setRollNumber] = useState("");
   const [name, setName] = useState("");
@@ -24,6 +27,8 @@ export default function RegisterPage() {
   const [year, setYear] = useState("");
   const [section, setSection] = useState("");
   const [phone, setPhone] = useState("");
+  const [githubUrl, setGithubUrl] = useState("");
+  const [linkedinUrl, setLinkedinUrl] = useState("");
   const [usernames, setUsernames] = useState<Record<Platform, string>>({
     leetcode: "",
     codeforces: "",
@@ -83,6 +88,22 @@ export default function RegisterPage() {
       setError("Phone number must be exactly 10 digits");
       return;
     }
+    if (!githubUrl.trim()) {
+      setError("GitHub profile is required");
+      return;
+    }
+    if (!GITHUB_URL_RE.test(githubUrl.trim())) {
+      setError("Please enter a valid GitHub profile URL");
+      return;
+    }
+    if (!linkedinUrl.trim()) {
+      setError("LinkedIn profile is required");
+      return;
+    }
+    if (!LINKEDIN_URL_RE.test(linkedinUrl.trim())) {
+      setError("Please enter a valid LinkedIn profile URL");
+      return;
+    }
 
     setLoading(true);
     try {
@@ -105,6 +126,8 @@ export default function RegisterPage() {
         year: yearNum,
         section,
         phone,
+        githubProfileUrl: githubUrl.trim(),
+        linkedinProfileUrl: linkedinUrl.trim(),
         leetcodeUsername: usernames.leetcode.trim() || undefined,
         codeforcesUsername: usernames.codeforces.trim() || undefined,
         codechefUsername: usernames.codechef.trim() || undefined,
@@ -236,6 +259,37 @@ export default function RegisterPage() {
                     placeholder="e.g. 9999999999"
                     inputMode="numeric"
                     maxLength={10}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t pt-4">
+              <p className="mb-1 text-sm font-semibold">Profile Links</p>
+              <p className="mb-3 text-xs text-muted-foreground">
+                Add your GitHub and LinkedIn profile URLs so recruiters can view your profiles.
+              </p>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="githubProfileUrl">GitHub Profile URL *</Label>
+                  <Input
+                    id="githubProfileUrl"
+                    type="url"
+                    value={githubUrl}
+                    onChange={(e) => setGithubUrl(e.target.value)}
+                    placeholder="e.g. https://github.com/username"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="linkedinProfileUrl">LinkedIn Profile URL *</Label>
+                  <Input
+                    id="linkedinProfileUrl"
+                    type="url"
+                    value={linkedinUrl}
+                    onChange={(e) => setLinkedinUrl(e.target.value)}
+                    placeholder="e.g. https://www.linkedin.com/in/username"
                     required
                   />
                 </div>

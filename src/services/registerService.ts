@@ -8,6 +8,8 @@ export interface RegisterRequest {
   year: number;
   section: string;
   phone?: string;
+  githubProfileUrl?: string;
+  linkedinProfileUrl?: string;
   leetcodeUsername?: string;
   codeforcesUsername?: string;
   codechefUsername?: string;
