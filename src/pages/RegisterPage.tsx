@@ -191,7 +191,7 @@ export default function RegisterPage() {
                     id="rollNumber"
                     value={rollNumber}
                     onChange={(e) => setRollNumber(e.target.value)}
-                    placeholder="e.g. 21CS001"
+                    placeholder="e.g. 247R1A66A2"
                     required
                   />
                 </div>
@@ -201,7 +201,7 @@ export default function RegisterPage() {
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Priya Sharma"
+                    placeholder="e.g. Sriram"
                     required
                   />
                 </div>
@@ -212,7 +212,7 @@ export default function RegisterPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="student@college.edu"
+                    placeholder="e.g. rollnumber@cmrtc.ac.in"
                     required
                   />
                 </div>
@@ -222,7 +222,7 @@ export default function RegisterPage() {
                     id="branch"
                     value={branch}
                     onChange={(e) => setBranch(e.target.value)}
-                    placeholder="e.g. CSE"
+                    placeholder="e.g. CSM"
                     required
                   />
                 </div>
