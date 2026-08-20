@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FileText, Loader2, FileDown, GraduationCap } from "lucide-react";
+import { FileText, Loader2, FileDown, GraduationCap, LayoutGrid } from "lucide-react";
 import { toast } from "sonner";
 import AppLayout from "../components/AppLayout";
 import { PageHeader } from "../components/PageHeader";
@@ -15,6 +15,7 @@ export default function ReportsPage() {
   const [selectedStudent, setSelectedStudent] = useState("");
   const [selectedBranch, setSelectedBranch] = useState("");
   const [selectedYear, setSelectedYear] = useState("all");
+  const [selectedSectionYear, setSelectedSectionYear] = useState("1");
   const [busy, setBusy] = useState<string | null>(null);
 
   useEffect(() => {
@@ -187,6 +188,39 @@ export default function ReportsPage() {
                 Export PDF
               </Button>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <LayoutGrid className="h-5 w-5 text-amber-500" />
+              Section-wise Report
+            </CardTitle>
+            <CardDescription>
+              Performance table for a single academic year, ranked by section with section toppers.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Select value={selectedSectionYear} onValueChange={setSelectedSectionYear}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a year..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">I</SelectItem>
+                <SelectItem value="2">II</SelectItem>
+                <SelectItem value="3">III</SelectItem>
+                <SelectItem value="4">IV</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button
+              className="w-full"
+              disabled={busy !== null}
+              onClick={() => run("Section report", () => reportsService.downloadSectionReport(selectedSectionYear))}
+            >
+              {busy === "Section report" ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
+              Download PDF
+            </Button>
           </CardContent>
         </Card>
       </div>

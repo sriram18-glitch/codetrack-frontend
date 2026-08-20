@@ -35,3 +35,11 @@ export async function downloadYearReport(year: string): Promise<void> {
   });
   download(res.data, `year-report-${year}.pdf`);
 }
+
+export async function downloadSectionReport(year: string): Promise<void> {
+  const res = await api.get<Blob>(`/reports/section/pdf`, {
+    params: { year },
+    responseType: "blob",
+  });
+  download(res.data, `section-report-year-${year}.pdf`);
+}

@@ -72,13 +72,13 @@ export default function LeaderboardPage() {
       <PageHeader
         icon={<Trophy className="h-6 w-6" />}
         title="Leaderboard"
-        description="Top performers ranked by overall coding readiness score."
+        description="Overall Performance - ranked by Overall Score, with platform-specific views per tab."
       />
 
       <div className="mt-6 flex flex-wrap items-center gap-3">
         <Tabs value={tab} onValueChange={(v) => setTab(v as SortKey)}>
           <TabsList>
-            <TabsTrigger value="overall">Overall</TabsTrigger>
+            <TabsTrigger value="overall">Overall Performance</TabsTrigger>
             <TabsTrigger value="lc">LeetCode</TabsTrigger>
             <TabsTrigger value="cf">Codeforces</TabsTrigger>
             <TabsTrigger value="cc">CodeChef</TabsTrigger>
@@ -138,7 +138,7 @@ export default function LeaderboardPage() {
                 <TableHead className="w-14">Rank</TableHead>
                 <TableHead>Student</TableHead>
                 <TableHead className="hidden md:table-cell">Branch / Year</TableHead>
-                <TableHead>{tab === "overall" ? "Overall" : tab === "lc" ? "Solved" : tab === "cf" ? "CF Rating" : "CC Rating"}</TableHead>
+                <TableHead>{tab === "overall" ? "Overall Score" : tab === "lc" ? "Solved" : tab === "cf" ? "CF Rating" : "CC Rating"}</TableHead>
                 <TableHead className="hidden sm:table-cell">Consistency</TableHead>
               </TableRow>
             </TableHeader>
