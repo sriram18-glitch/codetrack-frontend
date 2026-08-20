@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { GraduationCap, Loader2, CheckCircle2, XCircle, UserPlus } from "lucide-react";
+import { GraduationCap, Loader2, CheckCircle2, XCircle, UserPlus, Mail, Phone } from "lucide-react";
 import * as registerService from "../services/registerService";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -332,6 +332,30 @@ export default function RegisterPage() {
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
               {loading ? "Registering..." : "Create Account"}
             </Button>
+
+            <div className="rounded-lg border border-border bg-muted/40 p-4">
+              <p className="text-sm font-semibold">Need Help?</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Having trouble registering? If you are facing any issue with registration or adding your
+                coding platform profiles, contact:
+              </p>
+              <div className="mt-3 space-y-1.5 text-sm">
+                <a
+                  href="mailto:247r1a66a2@cmrtc.ac.in"
+                  className="flex items-center gap-2 text-muted-foreground hover:text-primary"
+                >
+                  <Mail className="h-4 w-4 shrink-0" />
+                  <span className="font-medium text-foreground">247r1a66a2@cmrtc.ac.in</span>
+                </a>
+                <a
+                  href="tel:8142312806"
+                  className="flex items-center gap-2 text-muted-foreground hover:text-primary"
+                >
+                  <Phone className="h-4 w-4 shrink-0" />
+                  <span className="font-medium text-foreground">8142312806</span>
+                </a>
+              </div>
+            </div>
           </form>
         </CardContent>
       </Card>
